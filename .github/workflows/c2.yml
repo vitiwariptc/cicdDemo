@@ -1,12 +1,12 @@
 name: CI2 Workflow
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_run:
+    workflows:
+      - CI Workflow
+      - Workflow B
+    types:
+      - completed
 
 jobs:
   build:
