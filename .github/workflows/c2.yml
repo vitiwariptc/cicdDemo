@@ -32,6 +32,6 @@ jobs:
             
       - name: Run Python File
         run: |
-            cd cicdDemo
+            cd cicdDemo/src
             python mathOperations.py
       
