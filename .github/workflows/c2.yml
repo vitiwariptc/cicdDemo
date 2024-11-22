@@ -20,18 +20,18 @@ jobs:
 
       - name: Clone a Script Repo
         run: |
-          git clone https://github.com/your-username/your-repo.git cloned-repo
-          cd cloned-repo
+          git clone https://github.com/vitiwariptc/cicdDemo.git cicdDemo
+          cd cicdDemo
           ls -la
 
       - name: Install Dependencies
         run: |
           cd cloned-repo
           python -m pip install --upgrade pip
-          pip install -r cloned-repo/requirements.txt
+          pip install -r cicdDemo/requirements.txt
             
       - name: Run Python File
         run: |
-            cd cloned-repo
-            python app.py
+            cd cicdDemo
+            python mathOperations.py
       
