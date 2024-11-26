@@ -1,0 +1,64 @@
+name: Automerge
+
+on:
+  pull_request_review:
+    types:
+      - submitted
+
+  workflow_dispatch:
+    inputs:
+      pull-request:
+        description: Pull Request Number
+        required: false
+
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check Pull Request Approvals
+        id: check-approvals
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number || github.event.inputs.pull-request }}
+          RAW_RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews)
+          echo "$RAW_RESPONSE"
+          RESPONSE=$(echo "$RAW_RESPONSE" | jq)
+          echo "$RESPONSE"
+          APPROVALS=$(echo "$RAW_RESPONSE" | jq '[.[] | select(.state == "APPROVED")] | length')
+          echo "Approvals: $APPROVALS"
+          if [ "$APPROVALS" -lt 2 ]; then
+            echo "Not enough approvals. Required: 2, Found: $APPROVALS."
+            exit 1
+          fi
+
+      steps:
+      - name: Check Required Status Checks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          REPO=${{ github.repository }}
+          BRANCH=${{ github.event.pull_request.head.ref }}
+
+          # Get the status of checks for the PR
+          CHECK_STATUS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/$REPO/commits/$BRANCH/status" \
+            | jq '.state')
+
+          echo "Check Status: $CHECK_STATUS"
+          if [ "$CHECK_STATUS" != "\"success\"" ]; then
+            echo "Not all checks have passed!"
+            exit 1
+          fi
+      
+      - name: AutoMerge Pull Request
+        uses: reitermarkus/automerge@v2
+        with:
+          token: ${{ secrets.MY_GITHUB_TOKEN }}
+          merge-method: rebase
+          do-not-merge-labels: never-merge
+          pull-request: ${{ github.event.inputs.pull-request }}
+          dry-run: false
