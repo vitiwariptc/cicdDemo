@@ -44,10 +44,11 @@ jobs:
           BRANCH=${{ github.event.pull_request.head.ref }}
 
           # Get the status of checks for the PR
-          CHECK_STATUS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-            "https://api.github.com/repos/$REPO/commits/$BRANCH/status" \
-            | jq '.state')
+          CHECK_RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/$REPO/commits/$BRANCH/status")
 
+          CHECK_STATUS=$(echo "$CHECK_RESPONSE" | jq '.state')
+          echo "Check Response: $CHECK_RESPONSE"
           echo "Check Status: $CHECK_STATUS"
           if [ "$CHECK_STATUS" != "\"success\"" ]; then
             echo "Not all checks have passed!"
