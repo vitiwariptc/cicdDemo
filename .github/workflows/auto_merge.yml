@@ -14,8 +14,8 @@ on:
 jobs:
   automerge:
     runs-on: ubuntu-latest
+    
     steps:
-
       - name: Check Pull Request Approvals
         id: check-approvals
         env:
@@ -34,7 +34,6 @@ jobs:
             exit 1
           fi
 
-      steps:
       - name: Check Required Status Checks
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
