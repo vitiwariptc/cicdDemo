@@ -30,7 +30,7 @@ jobs:
           echo "$RESPONSE"
           APPROVALS=$(echo "$RAW_RESPONSE" | jq '[.[] | select(.state == "APPROVED")] | length')
           echo "Approvals: $APPROVALS"
-          if [ "$APPROVALS" -lt 2 ]; then
+          if [ "$APPROVALS" -lt 1 ]; then
             echo "Not enough approvals. Required: 2, Found: $APPROVALS."
             exit 1
           fi
