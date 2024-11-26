@@ -19,7 +19,7 @@ jobs:
       - name: Check Pull Request Approvals
         id: check-approvals
         env:
-          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "$GITHUB_TOKEN"
           PR_NUMBER=${{ github.event.pull_request.number || github.event.inputs.pull-request }}
