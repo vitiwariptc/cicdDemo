@@ -1,0 +1,28 @@
+name: Trigger on Check Suite Completed
+
+on:
+  check_suite:
+    types: 
+      - completed
+
+jobs:
+  process-check-suite:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Log Check Suite Details
+        run: |
+          echo "Check Suite Information:"
+          echo "Action: ${{ github.event.action }}"
+          echo "Status: ${{ github.event.check_suite.status }}"
+          echo "Conclusion: ${{ github.event.check_suite.conclusion }}"
+          echo "Head SHA: ${{ github.event.check_suite.head_sha }}"
+          echo "Repository: ${{ github.repository }}"
+
+      - name: Perform Actions Based on Status
+        if: ${{ github.event.check_suite.conclusion == 'success' }}
+        run: echo "All checks passed! Performing additional actions..."
+
+      - name: Handle Failure
+        if: ${{ github.event.check_suite.conclusion == 'failure' }}
+        run: echo "Check Suite failed. Taking corrective measures."
