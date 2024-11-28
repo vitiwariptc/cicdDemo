@@ -19,5 +19,4 @@ jobs:
       # Enable auto-merge on the pull request
       - name: Enable Auto-Merge
         run: |
-          gh pr merge ${{ github.event.pull_request.number }} \
-          --auto --merge
+          gh pr merge ${{ github.event.pull_request.number }} --repo ${{github.repository}} --auto --merge
