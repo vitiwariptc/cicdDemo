@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{matrix.os}}
 
     strategy:
-      matrix:
+      matrix: 
         os: [ubuntu-latest, macOS-latest]
     steps:
       - name: Checkout code
