@@ -1,12 +1,23 @@
-name: Workflow B
+name: Auto-Merge PR with GH CLI
 
 on:
   pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
 
 jobs:
-  output_check:
+  auto-merge:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Run Steps for Workflow B
-        run: echo "Workflow B is running"
+      # Authenticate GitHub CLI using GITHUB_TOKEN
+      - name: Authenticate with GitHub CLI
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      # Enable auto-merge on the pull request
+      - name: Enable Auto-Merge
+        run: |
+          gh pr merge ${{ github.event.pull_request.number }} \
+          --auto --merge
